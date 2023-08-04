@@ -1,13 +1,13 @@
 package main
 
 import (
+	"boot/cmd/boot/project"
 	"context"
 	"log"
 
 	"github.com/spf13/cobra"
 
 	"boot"
-	"boot/cmd/project"
 )
 
 func main() {
