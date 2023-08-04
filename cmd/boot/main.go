@@ -1,13 +1,12 @@
 package main
 
 import (
-	"boot/cmd/boot/project"
 	"context"
+	"github.com/Rascal0814/boot"
+	"github.com/Rascal0814/boot/cmd/boot/project"
 	"log"
 
 	"github.com/spf13/cobra"
-
-	"boot"
 )
 
 func main() {
