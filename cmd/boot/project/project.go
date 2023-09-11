@@ -1,9 +1,12 @@
 package project
 
 import (
+	"bytes"
 	"context"
 	"fmt"
+	"io"
 	"io/fs"
+	"io/ioutil"
 	"os"
 	"path/filepath"
 	"strings"
@@ -15,7 +18,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var DefaultRepo = "git@github.com:Rascal0814/boot-template.git"
+var DefaultRepo = "https://github.com/Rascal0814/boot-template.git"
 
 // options 创建新项目所需要使用的参数
 var options struct {
@@ -70,6 +73,10 @@ func CommandNew() *cobra.Command {
 		},
 	}
 
+	cmd.PersistentFlags().StringVar(&options.repo, "repo", "", "the address of the service template")
+	cmd.PersistentFlags().StringVar(&options.module, "module", "", "the name of the golang project")
+	cmd.PersistentFlags().BoolVar(&options.withoutGit, "without-git", true, "without git-vcs init")
+
 	return cmd
 
 }
@@ -118,7 +125,7 @@ func createProject(ctx context.Context, name string) error {
 			return file.Error
 		}
 
-		//err = renderAndWrite(filepath.Join(projectDir, file.RelPath), file.Content, buildParams(name))
+		err = renderAndWrite(filepath.Join(projectDir, file.RelPath), file.Content, buildParams(name))
 		if err != nil {
 			return err
 		}
@@ -132,4 +139,60 @@ func createProject(ctx context.Context, name string) error {
 
 	fmt.Printf("\n🍺 Project creation succeeded %s\n", color.GreenString(name))
 	return nil
+}
+
+// renderAndWrite 渲染并生成对应的项目目录结构
+func renderAndWrite(dst string, src io.ReadCloser, params map[string]string) error {
+	// do not forget close file
+	defer func() { _ = src.Close() }()
+
+	data, err := ioutil.ReadAll(src)
+	if err != nil {
+		return err
+	}
+
+	dst = string(render([]byte(dst), params))
+	if err = os.MkdirAll(filepath.Dir(dst), fs.FileMode(0755)); err != nil {
+		return err
+	}
+
+	fp, err := os.Create(dst)
+	if err != nil {
+		return err
+	}
+	defer func() { _ = fp.Close() }()
+
+	if isBinary(data) {
+		_, err = fp.Write(data)
+		return err
+	}
+
+	_, err = fp.Write(render(data, params))
+	return err
+}
+
+// isBinary 检查文件是否是二进制文件
+func isBinary(data []byte) bool {
+	for _, b := range data {
+		if b == 0 {
+			return true
+		}
+	}
+	return false
+}
+
+// render 渲染特定的内容
+func render(data []byte, params map[string]string) []byte {
+	for k, v := range params {
+		data = bytes.ReplaceAll(data, []byte(k), []byte(v))
+	}
+	return data
+}
+
+// buildParams 构建模板参数
+func buildParams(name string) map[string]string {
+	return map[string]string{
+		"hml":      name,
+		"example/": options.module,
+	}
 }
