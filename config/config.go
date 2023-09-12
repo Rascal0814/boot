@@ -18,7 +18,8 @@ func getConfigName(confPath string) string {
 }
 
 // LoadConfig 加载配置文件 /config/xxx.yaml
-func LoadConfig(conf *Config) {
+func LoadConfig() (*Config, error) {
+	var conf = new(Config)
 	c := config.New(
 		config.WithSource(
 			file.NewSource(getConfigName("config")),
@@ -33,4 +34,6 @@ func LoadConfig(conf *Config) {
 	if err := c.Scan(conf); err != nil {
 		panic(err)
 	}
+
+	return conf, nil
 }
