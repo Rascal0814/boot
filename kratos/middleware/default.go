@@ -11,11 +11,7 @@ import (
 )
 
 func NewWhiteListMatcher() selector.MatchFunc {
-
 	whiteList := make(map[string]struct{})
-	whiteList["/api.login.v1.Login/Register"] = struct{}{}
-	whiteList["/api.login.v1.Login/Login"] = struct{}{}
-	whiteList["/api.helloworld.v1.Helloworld/GetHelloworld"] = struct{}{}
 	return func(ctx context.Context, operation string) bool {
 		if _, ok := whiteList[operation]; ok {
 			return false

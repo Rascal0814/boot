@@ -18,7 +18,7 @@ func getConfigName(confPath string) string {
 }
 
 // LoadConfig 加载配置文件 /config/xxx.yaml
-func LoadConfig(conf any) {
+func LoadConfig(conf *Config) {
 	c := config.New(
 		config.WithSource(
 			file.NewSource(getConfigName("config")),
