@@ -33,8 +33,6 @@ var DefaultHttpMiddleWare = []http.ServerOption{
 		handlers.AllowedMethods([]string{"GET", "POST", "OPTIONS", "PUT", "PATCH", "DELETE"}),
 		handlers.AllowCredentials(),
 	)),
-	//http.ResponseEncoder(response.ResponseEncoder()),
-	//http.ErrorEncoder(response.ErrorEncode()),
 }
 
 var DefaultGrpcMiddleWare = []grpc.ServerOption{

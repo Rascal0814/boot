@@ -4,8 +4,13 @@ import (
 	"github.com/Rascal0814/boot"
 	"github.com/go-kratos/kratos/v2/config"
 	"github.com/go-kratos/kratos/v2/config/file"
+	"gorm.io/driver/mysql"
+	"gorm.io/gorm"
 	"path"
+	"strings"
 )
+
+var db *gorm.DB
 
 // getConfigName  获取文件名
 func getConfigName(confPath string) string {
@@ -20,6 +25,7 @@ func getConfigName(confPath string) string {
 // LoadConfig 加载配置文件 /config/xxx.yaml
 func LoadConfig() (*Config, error) {
 	var conf = new(Config)
+	var err error = nil
 	c := config.New(
 		config.WithSource(
 			file.NewSource(getConfigName("config")),
@@ -35,5 +41,17 @@ func LoadConfig() (*Config, error) {
 		panic(err)
 	}
 
+	switch strings.ToUpper(conf.Data.Database.Driver) {
+	case "MYSQL":
+		db, err = gorm.Open(mysql.Open(conf.Data.Database.Source), &gorm.Config{})
+	}
+
+	if err != nil {
+		return nil, err
+	}
 	return conf, nil
+}
+
+func DefaultDB() *gorm.DB {
+	return db
 }
