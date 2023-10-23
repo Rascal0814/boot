@@ -6,6 +6,7 @@ import (
 	"github.com/go-kratos/kratos/v2/config/file"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 	"path"
 	"strings"
 )
@@ -43,7 +44,9 @@ func LoadConfig() (*Config, error) {
 
 	switch strings.ToUpper(conf.Data.Database.Driver) {
 	case "MYSQL":
-		db, err = gorm.Open(mysql.Open(conf.Data.Database.Source), &gorm.Config{})
+		db, err = gorm.Open(mysql.Open(conf.Data.Database.Source), &gorm.Config{
+			Logger: logger.Default.LogMode(logger.Info),
+		})
 	}
 
 	if err != nil {
