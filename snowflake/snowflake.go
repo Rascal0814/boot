@@ -18,6 +18,6 @@ func (s *Snowflake) GenId() int64 {
 	return int64(s.node.Generate())
 }
 
-func (s *Snowflake) GenIdStr(id int64) string {
+func (s *Snowflake) ParseId(id int64) string {
 	return snowflake.ID(id).String()
 }
