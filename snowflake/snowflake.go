@@ -14,6 +14,10 @@ func NewSnowflake() (*Snowflake, error) {
 	return &Snowflake{node: node}, nil
 }
 
-func (s *Snowflake) GenId() snowflake.ID {
-	return s.node.Generate()
+func (s *Snowflake) GenId() int64 {
+	return int64(s.node.Generate())
+}
+
+func (s *Snowflake) GenIdStr(id int64) string {
+	return snowflake.ID(id).String()
 }
