@@ -2,13 +2,12 @@ package config
 
 import (
 	"github.com/Rascal0814/boot"
+	"github.com/Rascal0814/boot/orm"
 	"github.com/go-kratos/kratos/v2/config"
 	"github.com/go-kratos/kratos/v2/config/file"
-	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 	"path"
-	"strings"
 )
 
 var db *gorm.DB
@@ -42,12 +41,14 @@ func LoadConfig() (*Config, error) {
 		panic(err)
 	}
 
-	switch strings.ToUpper(conf.Data.Database.Driver) {
-	case "MYSQL":
-		db, err = gorm.Open(mysql.Open(conf.Data.Database.Source), &gorm.Config{
-			Logger: logger.Default.LogMode(logger.Info),
-		})
+	connectDB, err := orm.ConnectDB(conf.Data.Database.Driver, conf.Data.Database.Source)
+	if err != nil {
+		return nil, err
 	}
+
+	db, err = gorm.Open(connectDB, &gorm.Config{
+		Logger: logger.Default.LogMode(logger.Info),
+	})
 
 	if err != nil {
 		return nil, err
