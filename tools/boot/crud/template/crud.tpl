@@ -16,8 +16,8 @@ type {{.ModelName}}Dao struct {
 	log *log.Logger
 }
 
-func New{{.ModelName}}Dap(db *gorm.DB, log *log.Logger) *{{.ModelName}}Dao {
-	return &DishesDao{db: db, log: log}
+func New{{.ModelName}}Dao(db *gorm.DB, log *log.Logger) *{{.ModelName}}Dao {
+	return &{{.ModelName}}Dao{db: db, log: log}
 }
 
 func (dao *{{.ModelName}}Dao) Insert(ctx context.Context, f func(dish *model.{{.ModelName}}) error) (*model.{{.ModelName}}, error) {
