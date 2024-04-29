@@ -5,21 +5,17 @@ import (
 	"fmt"
 	"github.com/Rascal0814/boot/orm"
 	"github.com/pkg/errors"
-	"golang.org/x/text/cases"
-	"golang.org/x/text/language"
 	"gorm.io/gorm"
+	"gorm.io/gorm/schema"
 	"os"
 	"path"
 	"path/filepath"
-	"regexp"
 	"strings"
 	"text/template"
 )
 
 //go:embed template/*.tpl
 var tpl embed.FS
-
-var commonInitialisms = []string{"API", "ASCII", "CPU", "CSS", "DNS", "EOF", "GUID", "HTML", "HTTP", "HTTPS", "ID", "IP", "JSON", "LHS", "QPS", "RAM", "RHS", "RPC", "SLA", "SMTP", "SSH", "TLS", "TTL", "UID", "UI", "UUID", "URI", "URL", "UTF8", "VM", "XML", "XSRF", "XSS"}
 
 type GenCrud struct {
 	db         *gorm.DB // db conn
@@ -60,13 +56,15 @@ func (g *GenCrud) getTables() ([]*Table, error) {
 		return nil, err
 	}
 	var ts = make([]*Table, 0)
+	// todo export naming to conf
+	var ns = schema.NamingStrategy{}
 	for _, t := range tables {
 		if t == "schema_migrations" {
 			continue
 		}
 		ts = append(ts, &Table{
 			TableName: t,
-			ModelName: g.toSchemaName(t),
+			ModelName: ns.SchemaName(t),
 			ModelPkg:  g.ModelPkg,
 		})
 	}
@@ -98,12 +96,4 @@ func (g *GenCrud) Gen() error {
 	}
 
 	return nil
-}
-
-func (g *GenCrud) toSchemaName(name string) string {
-	result := strings.ReplaceAll(cases.Title(language.English).String(strings.ReplaceAll(name, "_", " ")), " ", "")
-	for _, initialism := range commonInitialisms {
-		result = regexp.MustCompile(cases.Title(language.English).String(strings.ToLower(initialism))+"([A-Z]|$|_)").ReplaceAllString(result, initialism+"$1")
-	}
-	return result
 }
