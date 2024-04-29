@@ -1,4 +1,4 @@
-module github.com/Rascal0814/boot/tools
+module github.com/Rascal0814/boot/tools/boot
 
 go 1.22
 

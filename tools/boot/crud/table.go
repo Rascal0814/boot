@@ -1,4 +1,4 @@
-package orm
+package crud
 
 type Table struct {
 	TableName string // database table name

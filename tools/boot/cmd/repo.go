@@ -3,7 +3,7 @@ Copyright © 2024 NAME HERE <EMAIL ADDRESS>
 */
 package cmd
 
-import "github.com/Rascal0814/boot/tools/project"
+import "github.com/Rascal0814/boot/tools/boot/project"
 
 // repoCmd represents the repo command
 

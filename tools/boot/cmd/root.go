@@ -15,8 +15,8 @@ var rootCmd = &cobra.Command{
 	Use:           "boot",
 	Short:         "An elegant toolkit for Golang microservice",
 	Version:       boot.Version,
-	SilenceUsage:  true,
-	SilenceErrors: true,
+	SilenceUsage:  false,
+	SilenceErrors: false,
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.

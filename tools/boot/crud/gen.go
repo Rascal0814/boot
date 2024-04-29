@@ -1,13 +1,13 @@
-package orm
+package crud
 
 import (
+	"embed"
 	"fmt"
 	"github.com/Rascal0814/boot/orm"
 	"github.com/pkg/errors"
 	"golang.org/x/text/cases"
 	"golang.org/x/text/language"
 	"gorm.io/gorm"
-	"gorm.io/gorm/logger"
 	"os"
 	"path"
 	"path/filepath"
@@ -15,6 +15,9 @@ import (
 	"strings"
 	"text/template"
 )
+
+//go:embed template/*.tpl
+var tpl embed.FS
 
 var commonInitialisms = []string{"API", "ASCII", "CPU", "CSS", "DNS", "EOF", "GUID", "HTML", "HTTP", "HTTPS", "ID", "IP", "JSON", "LHS", "QPS", "RAM", "RHS", "RPC", "SLA", "SMTP", "SSH", "TLS", "TTL", "UID", "UI", "UUID", "URI", "URL", "UTF8", "VM", "XML", "XSRF", "XSS"}
 
@@ -43,9 +46,7 @@ func NewGenCurd(dsn string, modelPkg string, output string) (*GenCrud, error) {
 		return nil, err
 	}
 
-	db, err := gorm.Open(connectDB, &gorm.Config{
-		Logger: logger.Default.LogMode(logger.Info),
-	})
+	db, err := gorm.Open(connectDB, &gorm.Config{})
 
 	if err != nil {
 		return nil, err
@@ -79,16 +80,16 @@ func (g *GenCrud) Gen() error {
 	}
 	for _, t := range tables {
 		modelPath := path.Join(g.OutputPath, fmt.Sprintf("%s.gen.go", t.TableName))
+		tmp, err := template.ParseFS(tpl, "template/crud.tpl")
+		if err != nil {
+			return errors.Errorf("parse template file failed,%v", err)
+		}
 		if err := os.MkdirAll(filepath.Dir(modelPath), 0755); err != nil {
 			return err
 		}
 		f, err := os.Create(modelPath)
 		if err != nil {
 			return errors.Errorf("created gen file failed,%v", err)
-		}
-		tmp, err := template.ParseFiles("./template/crud.tpl")
-		if err != nil {
-			return errors.Errorf("parse template file failed,%v", err)
 		}
 		err = tmp.Execute(f, t)
 		if err != nil {
