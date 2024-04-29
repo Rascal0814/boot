@@ -1,12 +1,9 @@
 /*
 Copyright © 2024 NAME HERE <EMAIL ADDRESS>
-
 */
 package cmd
 
-import (
-	"github.com/Rascal0814/boot/cmd/boot/project"
-)
+import "github.com/Rascal0814/boot/tools/project"
 
 // repoCmd represents the repo command
 
