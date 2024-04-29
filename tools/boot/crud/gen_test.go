@@ -5,7 +5,7 @@ import (
 )
 
 func TestCrud(t *testing.T) {
-	curd, err := NewGenCurd("mysql://root:123456@tcp(43.143.80.123:3306)/order-dishes?charset=utf8&parseTime=True&loc=Local", "test/model", "dao")
+	curd, err := NewGenCurd("mysql://user:password@tcp(xxx:3306)/xxx?charset=utf8&parseTime=True&loc=Local", "test/model", "dao")
 	if err != nil {
 		t.Fatal(err)
 	}
