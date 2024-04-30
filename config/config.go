@@ -12,6 +12,8 @@ import (
 
 var db *gorm.DB
 
+type CPath string
+
 // getConfigName  获取文件名
 func getConfigName(confPath string) string {
 	c := boot.Loc
@@ -23,12 +25,12 @@ func getConfigName(confPath string) string {
 }
 
 // LoadConfig 加载配置文件 /config/xxx.yaml
-func LoadConfig(confPath string) (*Config, error) {
+func LoadConfig(confPath CPath) (*Config, error) {
 	var conf = new(Config)
 	var err error = nil
 	c := config.New(
 		config.WithSource(
-			file.NewSource(getConfigName(confPath)),
+			file.NewSource(getConfigName(string(confPath))),
 		),
 	)
 	defer func() { _ = c.Close() }()

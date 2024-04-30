@@ -15,17 +15,19 @@ type Logger struct {
 	ctx    context.Context
 }
 
+type ServiceName string
+
 const (
 	msgk = "msg"
 )
 
-func NewLogger(name string) *Logger {
+func NewLogger(name ServiceName) *Logger {
 	logger := slog.New(slogor.NewHandler(os.Stderr, &slogor.Options{
 		TimeFormat: time.Stamp,
 		Level:      slog.LevelDebug,
 		ShowSource: false,
 	}))
-	return &Logger{logger: logger, name: name}
+	return &Logger{logger: logger, name: string(name)}
 }
 
 func (l *Logger) Error(msg string, err error, args ...any) error {
