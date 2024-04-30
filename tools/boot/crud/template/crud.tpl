@@ -20,15 +20,15 @@ func New{{.ModelName}}Dao(db *gorm.DB, log *log.Logger) *{{.ModelName}}Dao {
 	return &{{.ModelName}}Dao{db: db, log: log}
 }
 
-func (dao *{{.ModelName}}Dao) Insert(ctx context.Context, f func(dish *model.{{.ModelName}}) error) (*model.{{.ModelName}}, error) {
+func (dao *{{.ModelName}}Dao) Insert(ctx context.Context, f func(m *model.{{.ModelName}}) error) (*model.{{.ModelName}}, error) {
 	var m model.{{.ModelName}}
 	err := f(&m)
 	if err != nil {
-		return nil, dao.log.Error("insert dish error", err)
+		return nil, dao.log.Error("insert {{.ModelName}} error", err)
 	}
 	err = dao.db.WithContext(ctx).Create(&m).Error
 	if err != nil {
-		return nil, dao.log.Error("insert dish error", err)
+		return nil, dao.log.Error("insert {{.ModelName}} error", err)
 	}
 	return &m, err
 }
@@ -45,7 +45,7 @@ func (dao *{{.ModelName}}Dao) Get(ctx context.Context, id int64) (*model.{{.Mode
 func (dao *{{.ModelName}}Dao) Del(ctx context.Context, id int64) error {
 	err := dao.db.WithContext(ctx).Where("id = ?", id).Delete(&model.{{.ModelName}}{}).Error
 	if err != nil {
-		return dao.log.Error("del dish error", err)
+		return dao.log.Error("del {{.ModelName}} error", err)
 	}
 	return nil
 }
@@ -55,7 +55,7 @@ func (dao *{{.ModelName}}Dao) List(ctx context.Context,p *orm.Pager) ([]*model.{
 	var total int64
 	err := dao.db.WithContext(ctx).Model(&model.{{.ModelName}}{}).Count(&total).Limit(int((p.PageIndex) * p.PageSize)).Offset(int(p.PageIndex - 1)).Find(&res).Error
 	if err != nil {
-		return nil, 0, dao.log.Error("get dish list error", err)
+		return nil, 0, dao.log.Error("get {{.ModelName}} list error", err)
 	}
 	return res, total, nil
 }
@@ -63,7 +63,7 @@ func (dao *{{.ModelName}}Dao) List(ctx context.Context,p *orm.Pager) ([]*model.{
 func (dao *{{.ModelName}}Dao) Update(ctx context.Context, m *model.{{.ModelName}}) (*model.{{.ModelName}}, error) {
 	err := dao.db.WithContext(ctx).Updates(m).Error
 	if err != nil {
-		return nil, dao.log.Error("update dish error", err)
+		return nil, dao.log.Error("update {{.ModelName}} error", err)
 	}
 	return m, nil
 }
