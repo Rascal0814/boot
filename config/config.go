@@ -56,6 +56,6 @@ func LoadConfig() (*Config, error) {
 	return conf, nil
 }
 
-func DefaultDB() *gorm.DB {
+func DefaultDB(c *Config) *gorm.DB {
 	return db
 }
