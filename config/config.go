@@ -1,6 +1,7 @@
 package config
 
 import (
+	"flag"
 	"github.com/Rascal0814/boot"
 	"github.com/Rascal0814/boot/orm"
 	"github.com/go-kratos/kratos/v2/config"
@@ -10,7 +11,10 @@ import (
 	"path"
 )
 
-var db *gorm.DB
+var (
+	db       *gorm.DB
+	flagConf string
+)
 
 // getConfigName  获取文件名
 func getConfigName(confPath string) string {
@@ -22,13 +26,17 @@ func getConfigName(confPath string) string {
 
 }
 
+func init() {
+	flag.StringVar(&flagConf, "conf", "config", "config path, eg: -conf config.yaml")
+}
+
 // LoadConfig 加载配置文件 /config/xxx.yaml
 func LoadConfig() (*Config, error) {
 	var conf = new(Config)
 	var err error = nil
 	c := config.New(
 		config.WithSource(
-			file.NewSource(getConfigName("config")),
+			file.NewSource(getConfigName(flagConf)),
 		),
 	)
 	defer func() { _ = c.Close() }()
