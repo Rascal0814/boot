@@ -35,7 +35,7 @@ func (dao *{{.ModelName}}Dao) Insert(ctx context.Context, f func(m *model.{{.Mod
 
 func (dao *{{.ModelName}}Dao) Get(ctx context.Context, id int64) (*model.{{.ModelName}}, error) {
 	var m = &model.{{.ModelName}}{}
-	err := dao.db.WithContext(ctx).Where("id = ?", id).Find(m).Error
+	err := dao.db.WithContext(ctx).Where("id = ?", id).First(m).Error
 	if err != nil {
 		return nil, err
 	}
